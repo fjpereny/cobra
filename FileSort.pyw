@@ -65,7 +65,7 @@ def scan_files():
             os.mkdir(d_path)
         shutil.copy(str(f), d_path)
         prog_value += 1
-        prog_bar.config(value=prog_value)
+        prog_bar.config(value=prog_value, mode='determinate')
     
     files_found = 'Transfer Complete!'
     root.update_idletasks()
