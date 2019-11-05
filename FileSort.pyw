@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 import threading
 import tkinter as tk
@@ -41,33 +42,38 @@ def start_button_click():
     t1.start()
 
 def scan_files():
-    found = 0
     files_found = tk.StringVar(root, value='Scanning Files - Please Wait...')
     tk.Label(root, textvariable=files_found).grid(row=3, column=1, padx='3px', pady='3px', sticky='ew')
     root.update_idletasks()
     prog_bar.configure(mode='indeterminate', value=0)
-    for rt, dirs, files in os.walk(source_path.get()):
-        for name in files:
-            # print(os.path.join(rt, name))
-            for name in dirs:
-                # print(os.path.join(rt, name))
-                found += 1
-    files_found.set(f'{found:,}' + ' Files Found!')
     
-    prog_bar.configure(maximum=found, mode='determinate')
-    x = 0
+    file_index = []
     for rt, dirs, files in os.walk(source_path.get()):
-        for name in files:
-            print(os.path.join(rt, name))
-            for name in dirs:
-                print(os.path.join(rt, name))
-                x += 1
-                prog_bar.configure(value=x)
-                files_found.set(str(int(float(x)/found * 100)) + '% (' + str(x) + ' of ' + str(found) + ') Files Complete ')
-                root.update_idletasks()
-    start_button.config(state='normal')
+        for f in files:
+            path = rt + '/' + f
+            file_index.append(path)
+
+    files_found = str(len(file_index)) + ' Files Found!'
+    root.update_idletasks()
+
+    prog_value = 0
+    prog_bar.config(maximum=len(file_index))
+    for f in file_index:
+        filename, extension = os.path.splitext(f)
+        d_path = dest_entry.get() + '/' + extension[1:]
+        if not os.path.exists(d_path):
+            os.mkdir(d_path)
+        shutil.copy(str(f), d_path)
+        prog_value += 1
+        prog_bar.config(value=prog_value)
+    
+    files_found = 'Transfer Complete!'
+    root.update_idletasks()
     source_button.config(state='normal')
     dest_button.config(state='normal')
+    start_button.config(state='normal')
+
+
 # Main Window
 root = tk.Tk()
 root.title('File Sort')
