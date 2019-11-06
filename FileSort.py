@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 import sys
@@ -49,26 +50,28 @@ def scan_files():
     
     file_index = []
     for rt, dirs, files in os.walk(source_path.get()):
+        del(dirs) # Unused Variable
         for f in files:
             path = rt + '/' + f
             file_index.append(path)
 
-    files_found = str(len(file_index)) + ' Files Found!'
-    root.update_idletasks()
-
     prog_value = 0
     prog_bar.config(maximum=len(file_index))
     for f in file_index:
+        perc_complete = int(prog_value/len(file_index) * 100)
+        files_found.set(str(perc_complete) + '% - ' + str(prog_value) + ' of ' + str(len(file_index)) + ' files copied...')
         filename, extension = os.path.splitext(f)
+        del(filename) # Unused Variable
         d_path = dest_entry.get() + '/' + extension[1:]
         if not os.path.exists(d_path):
             os.mkdir(d_path)
-        shutil.copy(str(f), d_path)
+        try:
+            shutil.copy(str(f), d_path)
+        except:
+            logging.error(str(f) + ' copy failure...')
         prog_value += 1
         prog_bar.config(value=prog_value, mode='determinate')
     
-    files_found = 'Transfer Complete!'
-    root.update_idletasks()
     source_button.config(state='normal')
     dest_button.config(state='normal')
     start_button.config(state='normal')
