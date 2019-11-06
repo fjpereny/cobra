@@ -71,11 +71,11 @@ def scan_files():
             logging.error(str(f) + ' copy failure...')
         prog_value += 1
         prog_bar.config(value=prog_value, mode='determinate')
-    
+    files_found.set('Complete')
     source_button.config(state='normal')
     dest_button.config(state='normal')
     start_button.config(state='normal')
-
+    root.update_idletasks()
 
 # Main Window
 root = tk.Tk()
