@@ -12,7 +12,7 @@ filePath = os.path.dirname(os.path.abspath(__file__))
 
 def about_window():
     license_text = ''
-    with open(filePath + '/License.txt', 'r') as f:
+    with open(filePath + '/LICENSE.txt', 'r') as f:
         license_text += '\n\n' + f.read()
     f.close()
     tk.messagebox.showinfo('About File Sort', license_text)
